@@ -1,5 +1,5 @@
 import { ChartBarIcon, InformationCircleIcon, QuestionMarkCircleIcon } from '@heroicons/react/outline'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Alert } from './components/alerts/Alert'
 import { Grid } from './components/grid/Grid'
 import { Keyboard } from './components/keyboard/Keyboard'
@@ -29,7 +29,6 @@ function App() {
     const [isGameLost, setIsGameLost] = useState(false)
     const [shareComplete, setShareComplete] = useState(false)
     const [timeUntilNextWord, setTimeUntilNextWord] = useState(getTimeUntilNextWord())
-    const [isTimerRunning, setIsTimerRunning] = useState(false)
     const [applyPenalty, setApplyPenalty] = useState(false)
     const [guesses, setGuesses] = useState<string[]>(() => {
         const loaded = loadGameStateFromLocalStorage()
@@ -48,6 +47,9 @@ function App() {
     const [stats, setStats] = useState(() => loadStats())
 
     const [solution] = useState(() => getWordOfDay())
+
+    const [timeRemaining, setTimeRemaining] = useState<number>(180)
+    const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false)
 
     useEffect(() => {
         // Don't load state from localStorage in timed mode
