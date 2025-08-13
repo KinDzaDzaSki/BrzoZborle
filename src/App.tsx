@@ -48,8 +48,24 @@ function App() {
 
     const [solution] = useState(() => getWordOfDay())
 
-    const [timeRemaining, setTimeRemaining] = useState<number>(180)
+    // Fix 1: Keep only the setter since we don't use timeRemaining directly
+    const [, setTimeRemaining] = useState<number>(180)
     const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false)
+
+    // Fix 2: Add proper effect cleanup and dependency
+    useEffect(() => {
+        if (gameMode === 'timed' || gameMode === 'hard') {
+            setTimeRemaining(180)
+            setIsTimerRunning(true)
+        } else {
+            setIsTimerRunning(false)
+        }
+
+        // Cleanup when component unmounts or gameMode changes
+        return () => {
+            setIsTimerRunning(false)
+        }
+    }, [gameMode])
 
     useEffect(() => {
         // Don't load state from localStorage in timed mode
@@ -156,13 +172,6 @@ function App() {
             }
         }
     }
-
-    useEffect(() => {
-        if (gameMode === 'timed' || gameMode === 'hard') {
-            setTimeRemaining(180);
-            setIsTimerRunning(true);
-        }
-    }, [gameMode]); // Added gameMode to dependency array
 
     return (
         <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
