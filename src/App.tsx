@@ -155,6 +155,13 @@ function App() {
         }
     }
 
+    useEffect(() => {
+        if (gameMode === 'timed' || gameMode === 'hard') {
+            setTimeRemaining(180);
+            setIsTimerRunning(true);
+        }
+    }, [gameMode]); // Added gameMode to dependency array
+
     return (
         <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
             <Alert message="Немате внесено доволно букви" isOpen={isNotEnoughLetters} />
