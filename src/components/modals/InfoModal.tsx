@@ -52,7 +52,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                                     </Dialog.Title>
                                     <div className="mt-2">
                                         <p className="text-left text-md text-gray-500">
-                                            Погодете го <b>ЗБОРЛЕ</b> во 6 обиди.
+                                            Погодете го <b>БРЗО ЗБОРЛЕ</b> во 6 обиди.
                                         </p>
 
                                         <p className="text-left text-md text-gray-500 mt-2">
@@ -102,7 +102,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                                     </div>
 
                                     <p className="text-left text-md text-gray-500 mt-2 border-t-2 pt-2">
-                                        Нов <b>ЗБОРЛЕ</b> е достапен секој ден.
+                                        Нов <b>БРЗО ЗБОРЛЕ</b> е достапен секој ден.
                                     </p>
                                 </div>
                             </div>

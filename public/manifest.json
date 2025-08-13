@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Брзо Зборле",
+  "name": "Брзо Зборле - МК клон на Wordle",
   "icons": [
     {
       "src": "favicon.ico",

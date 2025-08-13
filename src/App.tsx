@@ -32,9 +32,6 @@ function App() {
     const [applyPenalty, setApplyPenalty] = useState(false)
     const [guesses, setGuesses] = useState<string[]>(() => {
         const loaded = loadGameStateFromLocalStorage()
-        if (loaded == null) {
-            setIsInfoModalOpen(true)
-        }
         if (loaded?.solutionIndex !== getWordOfDayIndex()) {
             return []
         }
@@ -176,12 +173,12 @@ function App() {
     return (
         <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
             <Alert message="Немате внесено доволно букви" isOpen={isNotEnoughLetters} />
-            <Alert message="Зборот не е пронајден во речникот на Зборле" isOpen={isWordNotFoundAlertOpen} />
+            <Alert message="Зборот не е пронајден во речникот на Брзо Зборле" isOpen={isWordNotFoundAlertOpen} />
             <Alert message={`Изгубивте, бараниот збор е ${getWordOfDay()}`} isOpen={isGameLost} />
             <Alert message="Копирано во clipboard за споделување" isOpen={shareComplete} variant="success" />
             <div className="flex w-80 mx-auto items-center mb-2">
                 <QuestionMarkCircleIcon className="h-6 w-6 cursor-pointer" onClick={() => setIsInfoModalOpen(true)} />
-                <h1 className="text-4xl text-center text-slate-700 tracking-widest grow uppercase font-bold">Зборле</h1>
+                <h1 className="text-4xl text-center text-slate-700 tracking-widest grow uppercase font-bold">Брзо Зборле</h1>
                 <ChartBarIcon className="h-6 w-6 cursor-pointer" onClick={() => setIsStatsModalOpen(true)} />
             </div>
 
@@ -210,6 +207,27 @@ function App() {
                         win={isWinAnimationStarted}
                         gameMode={gameMode}
                     />
+                    <div className="flex justify-center mb-4">
+                        <button
+                            type="button"
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            onClick={() => {
+                                // Reset the game with a new word
+                                setGuesses([])
+                                setIsGameWon(false)
+                                setIsGameLost(false)
+                                setCurrentGuess('')
+                                setIsTimerRunning(false)
+                                if (gameMode === 'timed' || gameMode === 'hard') {
+                                    setTimeRemaining(180)
+                                    setIsTimerRunning(true)
+                                }
+                                localStorage.removeItem('gameState')
+                            }}
+                        >
+                            НОВО ЗБОРЧЕ
+                        </button>
+                    </div>
                     <Keyboard 
                         onChar={onChar} 
                         onDelete={onDelete} 
@@ -282,13 +300,12 @@ function App() {
                 <button
                     type="button"
                     className="flex items-center px-4 py-1 border border-transparent text-xs font-medium rounded text-slate-700 bg-slate-100 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                    onClick={() => setIsAboutModalOpen(true)}
+                    onClick={() => setIsMainMenuOpen(true)}
                 >
                     <InformationCircleIcon
                         className="h-6 w-6 cursor-pointer mr-2"
-                        onClick={() => setIsInfoModalOpen(true)}
                     />
-                    За играта
+                    мени
                 </button>
             </div>
         </div>
