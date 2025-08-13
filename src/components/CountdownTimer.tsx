@@ -35,9 +35,14 @@ export const CountdownTimer = ({ initialTime, isRunning, onTimeUp, timePenalty =
 
     const minutes = Math.floor(timeLeft / 60)
     const seconds = timeLeft % 60
+    const isWarning = timeLeft <= 30
 
     return (
-        <div className="text-2xl font-bold text-center p-2">
+        <div 
+            className={`text-2xl font-bold text-center p-1 sm:p-2 rounded transition-colors duration-300 ${
+                isWarning ? 'text-red-600 animate-pulse' : ''
+            }`}
+        >
             {minutes}:{seconds.toString().padStart(2, '0')}
         </div>
     )

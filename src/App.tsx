@@ -185,7 +185,7 @@ function App() {
             {gameMode && (
                 <>
                     {(gameMode === 'timed' || gameMode === 'hard') && (
-                        <div className="w-80 mx-auto mb-4">
+                        <div className="w-80 mx-auto mb-2 sm:mb-4">
                             <CountdownTimer
                                 initialTime={180}
                                 isRunning={isTimerRunning}
