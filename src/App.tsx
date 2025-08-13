@@ -15,7 +15,7 @@ import { MainMenuModal } from './components/modals/MainMenuModal'
 import { CountdownTimer } from './components/CountdownTimer'
 
 function App() {
-    const [gameMode, setGameMode] = useState<'classic' | 'timed' | null>(null)
+    const [gameMode, setGameMode] = useState<'classic' | 'timed' | 'hard' | null>(null)
     const [isMainMenuOpen, setIsMainMenuOpen] = useState(true)
     const [currentGuess, setCurrentGuess] = useState('')
     const [isGameWon, setIsGameWon] = useState(false)
@@ -30,6 +30,7 @@ function App() {
     const [shareComplete, setShareComplete] = useState(false)
     const [timeUntilNextWord, setTimeUntilNextWord] = useState(getTimeUntilNextWord())
     const [isTimerRunning, setIsTimerRunning] = useState(false)
+    const [applyPenalty, setApplyPenalty] = useState(false)
     const [guesses, setGuesses] = useState<string[]>(() => {
         const loaded = loadGameStateFromLocalStorage()
         if (loaded == null) {
@@ -136,6 +137,13 @@ function App() {
                 return
             }
 
+            // Apply time penalty for wrong guesses in hard mode
+            if (gameMode === 'hard' && !winningWord) {
+                setApplyPenalty(true)
+                // Reset the penalty flag after a brief delay
+                setTimeout(() => setApplyPenalty(false), 100)
+            }
+
             if (guesses.length === 5) {
                 if (gameMode === 'classic') {
                     setStats(addStatsForCompletedGame(stats, guesses.length + 1))
@@ -161,7 +169,7 @@ function App() {
 
             {gameMode && (
                 <>
-                    {gameMode === 'timed' && (
+                    {(gameMode === 'timed' || gameMode === 'hard') && (
                         <div className="w-80 mx-auto mb-4">
                             <CountdownTimer
                                 initialTime={180}
@@ -171,6 +179,8 @@ function App() {
                                     setIsGameLost(true)
                                     setIsWinModalOpen(true)
                                 }}
+                                timePenalty={gameMode === 'hard' ? 20 : 0}
+                                applyPenalty={applyPenalty}
                             />
                         </div>
                     )}
@@ -180,8 +190,15 @@ function App() {
                         currentGuess={currentGuess}
                         invalid={isNotEnoughLetters || isWordNotFoundAlertOpen}
                         win={isWinAnimationStarted}
+                        gameMode={gameMode}
                     />
-                    <Keyboard onChar={onChar} onDelete={onDelete} onEnter={onEnter} guesses={guesses} />
+                    <Keyboard 
+                        onChar={onChar} 
+                        onDelete={onDelete} 
+                        onEnter={onEnter} 
+                        guesses={guesses}
+                        gameMode={gameMode}
+                    />
                 </>
             )}
 
@@ -191,10 +208,17 @@ function App() {
                 onModeSelect={(mode) => {
                     setGameMode(mode)
                     setIsMainMenuOpen(false)
-                    if (mode === 'timed') {
+                    if (mode === 'timed' || mode === 'hard') {
                         setIsTimerRunning(true)
                         setGuesses([])
                     }
+                    // Clear any existing game state for a fresh start
+                    localStorage.removeItem('gameState')
+                    localStorage.removeItem('gameStats')
+                    setGuesses([])
+                    setIsGameWon(false)
+                    setIsGameLost(false)
+                    setCurrentGuess('')
                 }}
             />
 
@@ -217,17 +241,38 @@ function App() {
             <StatsModal isOpen={isStatsModalOpen} handleClose={() => setIsStatsModalOpen(false)} gameStats={stats} />
             <AboutModal isOpen={isAboutModalOpen} handleClose={() => setIsAboutModalOpen(false)} />
 
-            <button
-                type="button"
-                className="mx-auto mt-8 flex items-center px-4 py-1 border border-transparent text-xs font-medium rounded text-slate-700 bg-slate-100 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                onClick={() => setIsAboutModalOpen(true)}
-            >
-                <InformationCircleIcon
-                    className="h-6 w-6 cursor-pointer mr-2"
-                    onClick={() => setIsInfoModalOpen(true)}
-                />
-                За играта
-            </button>
+            <div className="flex flex-col items-center mt-8 space-y-4">
+                {(isGameWon || isGameLost) && (
+                    <button
+                        type="button"
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        onClick={() => {
+                            setIsMainMenuOpen(true)
+                            setGameMode(null)
+                            setGuesses([])
+                            setIsGameWon(false)
+                            setIsGameLost(false)
+                            setCurrentGuess('')
+                            setIsTimerRunning(false)
+                            localStorage.removeItem('gameState')
+                            localStorage.removeItem('gameStats')
+                        }}
+                    >
+                        Нова Игра
+                    </button>
+                )}
+                <button
+                    type="button"
+                    className="flex items-center px-4 py-1 border border-transparent text-xs font-medium rounded text-slate-700 bg-slate-100 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+                    onClick={() => setIsAboutModalOpen(true)}
+                >
+                    <InformationCircleIcon
+                        className="h-6 w-6 cursor-pointer mr-2"
+                        onClick={() => setIsInfoModalOpen(true)}
+                    />
+                    За играта
+                </button>
+            </div>
         </div>
     )
 }

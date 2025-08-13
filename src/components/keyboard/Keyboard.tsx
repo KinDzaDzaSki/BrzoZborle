@@ -9,10 +9,11 @@ type Props = {
     onDelete: () => void
     onEnter: () => void
     guesses: string[]
+    gameMode?: 'classic' | 'timed' | 'hard' | null
 }
 
-export const Keyboard = ({ onChar, onDelete, onEnter, guesses }: Props) => {
-    const charStatuses = getStatuses(guesses)
+export const Keyboard = ({ onChar, onDelete, onEnter, guesses, gameMode }: Props) => {
+    const charStatuses = gameMode === 'hard' ? {} : getStatuses(guesses)
 
     const onClick = (value: KeyValue) => {
         if (value === 'ENTER') {

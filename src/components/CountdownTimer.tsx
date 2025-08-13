@@ -4,10 +4,19 @@ type Props = {
     initialTime: number // in seconds
     isRunning: boolean
     onTimeUp: () => void
+    timePenalty?: number // amount to reduce when penalty is applied
+    applyPenalty?: boolean // trigger to apply the penalty
 }
 
-export const CountdownTimer = ({ initialTime, isRunning, onTimeUp }: Props) => {
+export const CountdownTimer = ({ initialTime, isRunning, onTimeUp, timePenalty = 0, applyPenalty = false }: Props) => {
     const [timeLeft, setTimeLeft] = useState(initialTime)
+
+    // Handle time penalties
+    useEffect(() => {
+        if (applyPenalty && timePenalty > 0) {
+            setTimeLeft((prevTime) => Math.max(0, prevTime - timePenalty))
+        }
+    }, [applyPenalty, timePenalty])
 
     useEffect(() => {
         if (!isRunning) return

@@ -7,16 +7,17 @@ type Props = {
     currentGuess: string
     invalid?: boolean
     win?: boolean
+    gameMode?: 'classic' | 'timed' | 'hard' | null
 }
 
-export const Grid = ({ guesses, currentGuess, invalid = false, win = false }: Props) => {
+export const Grid = ({ guesses, currentGuess, invalid = false, win = false, gameMode }: Props) => {
     const empties =
       guesses.length < 5 ? Array.from(Array(5 - guesses.length)) : []
 
     return (
       <div className="pb-6">
           {guesses.map((guess, i) => (
-            <CompletedRow key={i} guess={guess} win={win && i === guesses.length - 1} />
+            <CompletedRow key={i} guess={guess} win={win && i === guesses.length - 1} gameMode={gameMode} />
           ))}
           {guesses.length < 6 && <CurrentRow guess={currentGuess} invalid={invalid} win={win} />}
           {empties.map((_, i) => (

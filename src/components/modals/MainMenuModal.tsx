@@ -4,7 +4,7 @@ import { Dialog, Transition } from '@headlessui/react'
 type Props = {
     isOpen: boolean
     handleClose: () => void
-    onModeSelect: (mode: 'classic' | 'timed') => void
+    onModeSelect: (mode: 'classic' | 'timed' | 'hard') => void
 }
 
 export const MainMenuModal = ({ isOpen, handleClose, onModeSelect }: Props) => {
@@ -43,20 +43,42 @@ export const MainMenuModal = ({ isOpen, handleClose, onModeSelect }: Props) => {
                                     Изберете режим на игра
                                 </Dialog.Title>
                                 <div className="mt-4 space-y-4">
-                                    <button
-                                        type="button"
-                                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-4 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-lg"
-                                        onClick={() => onModeSelect('classic')}
-                                    >
-                                        КЛАСИК
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-4 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-lg"
-                                        onClick={() => onModeSelect('timed')}
-                                    >
-                                        ТЕМПИРАНО
-                                    </button>
+                                    <div className="space-y-2">
+                                        <button
+                                            type="button"
+                                            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-4 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-lg"
+                                            onClick={() => onModeSelect('classic')}
+                                        >
+                                            КЛАСИК
+                                        </button>
+                                        <p className="text-sm text-gray-500">
+                                            Класичен режим без временско ограничување.
+                                        </p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <button
+                                            type="button"
+                                            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-4 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-lg"
+                                            onClick={() => onModeSelect('timed')}
+                                        >
+                                            ТЕМПИРАНО
+                                        </button>
+                                        <p className="text-sm text-gray-500">
+                                            3 минути за погодување на зборот.
+                                        </p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <button
+                                            type="button"
+                                            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-4 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-lg"
+                                            onClick={() => onModeSelect('hard')}
+                                        >
+                                            ТЕШКОТО
+                                        </button>
+                                        <p className="text-sm text-gray-500">
+                                            3 минути, -20 секунди за секоја грешка. Само точните букви на точна позиција се прикажуваат.
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
