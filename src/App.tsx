@@ -27,7 +27,7 @@ function App() {
     const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
     const [isWordNotFoundAlertOpen, setIsWordNotFoundAlertOpen] = useState(false)
     const [isGameLost, setIsGameLost] = useState(false)
-    const [shareComplete, setShareComplete] = useState(false)
+
     const [timeUntilNextWord, setTimeUntilNextWord] = useState(getTimeUntilNextWord())
     const [applyPenalty, setApplyPenalty] = useState(false)
     const [guesses, setGuesses] = useState<string[]>(() => {
@@ -175,7 +175,6 @@ function App() {
             <Alert message="Немате внесено доволно букви" isOpen={isNotEnoughLetters} />
             <Alert message="Зборот не е пронајден во речникот на Брзо Зборле" isOpen={isWordNotFoundAlertOpen} />
             <Alert message={`Изгубивте, бараниот збор е ${getWordOfDay()}`} isOpen={isGameLost} />
-            <Alert message="Копирано во clipboard за споделување" isOpen={shareComplete} variant="success" />
             <div className="flex w-80 mx-auto items-center mb-2">
                 <QuestionMarkCircleIcon className="h-6 w-6 cursor-pointer" onClick={() => setIsInfoModalOpen(true)} />
                 <h1 className="text-3xl sm:text-4xl text-center text-slate-700 tracking-wide sm:tracking-widest grow uppercase font-bold whitespace-nowrap">Брзо Зборле</h1>
@@ -242,13 +241,6 @@ function App() {
                 isOpen={isWinModalOpen}
                 handleClose={() => setIsWinModalOpen(false)}
                 guesses={guesses}
-                handleShare={() => {
-                    setIsWinModalOpen(false)
-                    setShareComplete(true)
-                    return setTimeout(() => {
-                        setShareComplete(false)
-                    }, 2000)
-                }}
                 timeLeft={timeUntilNextWord}
                 isLost={isGameLost}
                 solution={isGameLost ? solution : undefined}

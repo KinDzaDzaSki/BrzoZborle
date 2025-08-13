@@ -1,8 +1,7 @@
 import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { CheckIcon, XIcon } from '@heroicons/react/outline'
+import { XIcon } from '@heroicons/react/outline'
 import { MiniGrid } from '../mini-grid/MiniGrid'
-import { shareStatus } from '../../lib/share'
 import { Time } from '../../lib/words'
 import { TimeLeft } from './TimeLeft'
 
@@ -10,13 +9,12 @@ type Props = {
     isOpen: boolean
     handleClose: () => void
     guesses: string[]
-    handleShare: () => void
     timeLeft: Time
     isLost?: boolean
     solution?: string
 }
 
-export const WinModal = ({ isOpen, handleClose, guesses, handleShare, timeLeft, isLost, solution }: Props) => {
+export const WinModal = ({ isOpen, handleClose, guesses, timeLeft, isLost, solution }: Props) => {
     return (
         <Transition.Root show={isOpen} as={Fragment}>
             <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={handleClose}>
@@ -82,9 +80,6 @@ export const WinModal = ({ isOpen, handleClose, guesses, handleShare, timeLeft, 
                                             </Dialog.Title>
                                             <div className="mt-2">
                                                 <MiniGrid guesses={guesses} />
-                                                <p className="text-sm text-gray-500">
-                                                    Одлично, споделете го резултатот од играта.
-                                                </p>
                                             </div>
                                         </div>
                                     </>
@@ -94,16 +89,6 @@ export const WinModal = ({ isOpen, handleClose, guesses, handleShare, timeLeft, 
                                 <TimeLeft timeLeft={timeLeft} />
                             </div>
                             <div className="mt-5 sm:mt-6">
-                                <button
-                                    type="button"
-                                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-slate-600 text-base font-medium text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 sm:text-sm"
-                                    onClick={() => {
-                                        shareStatus(guesses)
-                                        handleShare()
-                                    }}
-                                >
-                                    Сподели
-                                </button>
                             </div>
                         </div>
                     </Transition.Child>
