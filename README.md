@@ -1,5 +1,5 @@
 # Зборле - MK Wordle Clone 
-
+- Play it БрзоЗборле [here](https://zborle.mk)
 - Play it Зборле [here](https://zborle.mk)
 - Go play the real Wordle [here](https://www.powerlanguage.co.uk/wordle/)
 - Read the story behind it [here](https://www.nytimes.com/2022/01/03/technology/wordle-word-game-creator.html)
