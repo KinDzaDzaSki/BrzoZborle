@@ -12,9 +12,10 @@ type Props = {
     timeLeft: Time
     isLost?: boolean
     solution?: string
+    gameMode?: 'classic' | 'timed' | 'hard' | null
 }
 
-export const WinModal = ({ isOpen, handleClose, guesses, timeLeft, isLost, solution }: Props) => {
+export const WinModal = ({ isOpen, handleClose, guesses, timeLeft, isLost, solution, gameMode }: Props) => {
     return (
         <Transition.Root show={isOpen} as={Fragment}>
             <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={handleClose}>
@@ -65,7 +66,7 @@ export const WinModal = ({ isOpen, handleClose, guesses, timeLeft, isLost, solut
                                                 <p className="text-lg text-gray-700 mb-4">
                                                     Точниот збор беше: <span className="font-bold">{solution}</span>
                                                 </p>
-                                                <MiniGrid guesses={guesses} />
+                                                <MiniGrid guesses={guesses} gameMode={gameMode} />
                                             </div>
                                         </div>
                                     </>
@@ -79,7 +80,7 @@ export const WinModal = ({ isOpen, handleClose, guesses, timeLeft, isLost, solut
                                                 Го погодивте зборот!
                                             </Dialog.Title>
                                             <div className="mt-2">
-                                                <MiniGrid guesses={guesses} />
+                                                <MiniGrid guesses={guesses} gameMode={gameMode} />
                                             </div>
                                         </div>
                                     </>

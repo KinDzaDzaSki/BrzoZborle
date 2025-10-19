@@ -38,9 +38,13 @@ function App() {
             return []
         }
         // If any loaded guess matches the mode-specific solution, mark win
-        const loadedSolution = gameMode ? getModeWordOfDay(gameMode) : getWordOfDay()
+        const loadedSolution = loaded.gameMode ? getModeWordOfDay(loaded.gameMode) : getWordOfDay()
         if (loaded.guesses.includes(loadedSolution)) {
             setIsGameWon(true)
+        }
+        // If a gameMode was saved with the state, set it as current mode
+        if (loaded.gameMode) {
+            setGameMode(loaded.gameMode)
         }
         return loaded.guesses
     })
@@ -94,8 +98,9 @@ function App() {
         saveGameStateToLocalStorage({
             guesses,
             solutionIndex: getWordOfDayIndex(),
+            gameMode: gameMode ?? null,
         })
-    }, [guesses])
+    }, [guesses, gameMode])
 
     useEffect(() => {
         const timeout = setTimeout(() => setIsWinModalOpen(isGameWon), 2500)
@@ -145,34 +150,37 @@ function App() {
     const winningWord = isWinningWord(currentGuess, gameMode || undefined)
 
         if (currentGuess.length === 5 && guesses.length < 6 && !isGameWon) {
-            setGuesses([...guesses, currentGuess])
-            setCurrentGuess('')
+                const nextGuesses = [...guesses, currentGuess]
+                // Use functional update to avoid stale state
+                setGuesses((prev) => [...prev, currentGuess])
+                setCurrentGuess('')
 
-            if (winningWord) {
-                if (gameMode === 'classic') {
-                    setStats(addStatsForCompletedGame(stats, guesses.length))
+                if (winningWord) {
+                    if (gameMode === 'classic') {
+                        setStats((prevStats) => addStatsForCompletedGame(prevStats, nextGuesses.length))
+                    }
+                    setIsGameWon(true)
+                    setIsTimerRunning(false)
+                    return
                 }
-                setIsGameWon(true)
-                setIsTimerRunning(false)
-                return
-            }
 
-            // Apply time penalty for wrong guesses in hard mode
-            if (gameMode === 'hard' && !winningWord) {
-                setApplyPenalty(true)
-                // Reset the penalty flag after a brief delay
-                setTimeout(() => setApplyPenalty(false), 100)
-            }
-
-            if (guesses.length === 5) {
-                if (gameMode === 'classic') {
-                    setStats(addStatsForCompletedGame(stats, guesses.length + 1))
+                // Apply time penalty for wrong guesses in hard mode
+                if (gameMode === 'hard' && !winningWord) {
+                    setApplyPenalty(true)
+                    // Reset the penalty flag after a brief delay
+                    setTimeout(() => setApplyPenalty(false), 100)
                 }
-                setIsGameLost(true)
-                setIsTimerRunning(false)
-                setIsWinModalOpen(true)
+
+                // If this was the 6th guess, the player loses
+                if (nextGuesses.length === 6) {
+                    if (gameMode === 'classic') {
+                        setStats((prevStats) => addStatsForCompletedGame(prevStats, nextGuesses.length))
+                    }
+                    setIsGameLost(true)
+                    setIsTimerRunning(false)
+                    setIsWinModalOpen(true)
+                }
             }
-        }
     }
 
     return (
@@ -249,53 +257,14 @@ function App() {
                 timeLeft={timeUntilNextWord}
                 isLost={isGameLost}
                 solution={isGameLost ? solution : undefined}
+                gameMode={gameMode}
             />
             <InfoModal isOpen={isInfoModalOpen} handleClose={() => setIsInfoModalOpen(false)} />
             <StatsModal isOpen={isStatsModalOpen} handleClose={() => setIsStatsModalOpen(false)} gameStats={stats} />
             <AboutModal isOpen={isAboutModalOpen} handleClose={() => setIsAboutModalOpen(false)} />
 
             <div className="flex flex-col items-center mt-8 space-y-4">
-                {(isGameWon || isGameLost) && (
-                    <button
-                        type="button"
-                        className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        onClick={() => {
-                            setIsMainMenuOpen(true)
-                            setGameMode(null)
-                            setGuesses([])
-                            setIsGameWon(false)
-                            setIsGameLost(false)
-                            setCurrentGuess('')
-                            setIsTimerRunning(false)
-                            localStorage.removeItem('gameState')
-                            localStorage.removeItem('gameStats')
-                        }}
-                    >
-                        Нова Игра
-                    </button>
-                )}
                 <div className="flex space-x-4">
-                    <button
-                        type="button"
-                        className="flex items-center px-4 py-1 border border-transparent text-xs font-medium rounded text-slate-700 bg-slate-100 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                        onClick={() => {
-                            setGuesses([])
-                            setIsGameWon(false)
-                            setIsGameLost(false)
-                            setCurrentGuess('')
-                            setIsTimerRunning(false)
-                            if (gameMode === 'timed' || gameMode === 'hard') {
-                                setTimeRemaining(180)
-                                setIsTimerRunning(true)
-                            }
-                            localStorage.removeItem('gameState')
-                        }}
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                        ново зборче
-                    </button>
                     <button
                         type="button"
                         className="flex items-center px-4 py-1 border border-transparent text-xs font-medium rounded text-slate-700 bg-slate-100 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
