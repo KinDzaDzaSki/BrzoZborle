@@ -22,7 +22,10 @@ export const getModeWordOfDay = (mode: Mode) => {
     return WORDS[modeIdx].toUpperCase()
 }
 
-export const isWinningWord = (word: string) => {
+export const isWinningWord = (word: string, mode?: Mode) => {
+    if (mode) {
+        return getModeWordOfDay(mode) === word
+    }
     return getWordOfDay() === word
 }
 

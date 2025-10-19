@@ -32,10 +32,14 @@ function App() {
     const [applyPenalty, setApplyPenalty] = useState(false)
     const [guesses, setGuesses] = useState<string[]>(() => {
         const loaded = loadGameStateFromLocalStorage()
+        if (!loaded) return []
+        // If loaded solutionIndex doesn't match today's canonical index, don't load
         if (loaded?.solutionIndex !== getWordOfDayIndex()) {
             return []
         }
-        if (loaded.guesses.includes(getWordOfDay())) {
+        // If any loaded guess matches the mode-specific solution, mark win
+        const loadedSolution = gameMode ? getModeWordOfDay(gameMode) : getWordOfDay()
+        if (loaded.guesses.includes(loadedSolution)) {
             setIsGameWon(true)
         }
         return loaded.guesses
@@ -138,7 +142,7 @@ function App() {
             }, 2000)
         }
 
-        const winningWord = isWinningWord(currentGuess)
+    const winningWord = isWinningWord(currentGuess, gameMode || undefined)
 
         if (currentGuess.length === 5 && guesses.length < 6 && !isGameWon) {
             setGuesses([...guesses, currentGuess])
