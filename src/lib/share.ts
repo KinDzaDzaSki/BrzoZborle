@@ -1,18 +1,20 @@
 import { getGuessStatuses } from './statuses'
-import { getWordOfDayIndex } from './words'
+import { getWordOfDayIndex, getModeWordOfDay, getWordOfDay } from './words'
 
-export const shareStatus = (guesses: string[]) => {
+export const shareStatus = (guesses: string[], gameMode?: 'classic' | 'timed' | 'hard' | null) => {
     navigator.clipboard.writeText(
         `Брзо Зборле ${getWordOfDayIndex()} ${guesses.length}/6\n\n${generateEmojiGrid(
-            guesses
+            guesses,
+            gameMode
         )}\n\nИграјте БРЗО ЗБОРЛЕ https://zborle.mk`
     )
 }
 
-export const generateEmojiGrid = (guesses: string[]) => {
+export const generateEmojiGrid = (guesses: string[], gameMode?: 'classic' | 'timed' | 'hard' | null) => {
+    const solution = gameMode ? getModeWordOfDay(gameMode) : getWordOfDay()
     return guesses
         .map((guess) => {
-            const status = getGuessStatuses(guess)
+            const status = getGuessStatuses(guess, solution)
             return guess
                 .split('')
                 .map((letter, i) => {

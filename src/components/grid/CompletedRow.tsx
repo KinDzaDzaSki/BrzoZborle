@@ -1,4 +1,5 @@
 import { getGuessStatuses } from '../../lib/statuses'
+import { getModeWordOfDay, getWordOfDay } from '../../lib/words'
 import { Cell } from './Cell'
 
 type Props = {
@@ -8,7 +9,8 @@ type Props = {
 }
 
 export const CompletedRow = ({ guess, win = false, gameMode }: Props) => {
-    const statuses = getGuessStatuses(guess)
+  const solution = gameMode ? getModeWordOfDay(gameMode) : getWordOfDay()
+  const statuses = getGuessStatuses(guess, solution)
     return (
       <div className="flex justify-center mb-1">
           {guess.split('').map((letter, i) => {
