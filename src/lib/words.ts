@@ -1,5 +1,6 @@
 import { WORDS } from '../constants/wordlist'
 import { VALID_GUESSES } from '../constants/valid-guesses'
+import { modeSelector, Mode } from './modeSelector'
 
 // January 1, 2022 Game Epoch - UTC
 const EPOCH_START = 1640995200000
@@ -12,6 +13,13 @@ export const isWordInWordList = (word: string) => {
 
 export const getWordOfDay = () => {
     return WORDS[getWordOfDayIndex()].toUpperCase()
+}
+
+export const getModeWordOfDay = (mode: Mode) => {
+    const idx = getWordOfDayIndex()
+    const n = WORDS.length
+    const modeIdx = modeSelector(mode, idx, n)
+    return WORDS[modeIdx].toUpperCase()
 }
 
 export const isWinningWord = (word: string) => {

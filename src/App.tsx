@@ -6,7 +6,7 @@ import { Keyboard } from './components/keyboard/Keyboard'
 import { AboutModal } from './components/modals/AboutModal'
 import { InfoModal } from './components/modals/InfoModal'
 import { WinModal } from './components/modals/WinModal'
-import { getTimeUntilNextWord, getWordOfDay, getWordOfDayIndex, isWinningWord, isWordInWordList } from './lib/words'
+import { getTimeUntilNextWord, getWordOfDay, getWordOfDayIndex, isWinningWord, isWordInWordList, getModeWordOfDay } from './lib/words'
 import { loadGameStateFromLocalStorage, saveGameStateToLocalStorage } from './lib/localStorage'
 import { convert, LETTERS_EN } from './lib/keyboard'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
@@ -43,7 +43,8 @@ function App() {
 
     const [stats, setStats] = useState(() => loadStats())
 
-    const [solution] = useState(() => getWordOfDay())
+    // solution is derived from the selected game mode. If no mode selected, use canonical word of day.
+    const solution = gameMode ? getModeWordOfDay(gameMode) : getWordOfDay()
 
     // Fix 1: Keep only the setter since we don't use timeRemaining directly
     const [, setTimeRemaining] = useState<number>(180)
@@ -174,7 +175,7 @@ function App() {
         <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
             <Alert message="Немате внесено доволно букви" isOpen={isNotEnoughLetters} />
             <Alert message="Зборот не е пронајден во речникот на Брзо Зборле" isOpen={isWordNotFoundAlertOpen} />
-            <Alert message={`Изгубивте, бараниот збор е ${getWordOfDay()}`} isOpen={isGameLost} />
+            <Alert message={`Изгубивте, бараниот збор е ${solution}`} isOpen={isGameLost} />
             <div className="flex w-80 mx-auto items-center mb-2">
                 <QuestionMarkCircleIcon className="h-6 w-6 cursor-pointer" onClick={() => setIsInfoModalOpen(true)} />
                 <h1 className="text-3xl sm:text-4xl text-center text-slate-700 tracking-wide sm:tracking-widest grow uppercase font-bold whitespace-nowrap">Брзо Зборле</h1>
